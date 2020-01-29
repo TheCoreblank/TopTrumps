@@ -1,32 +1,34 @@
-import json, urllib.request, datetime, sys
+import json, requests, datetime, sys
 
 playerLOC = []
 AILOC = []
 
 def writelog(log):
      with open('logs.txt', 'a') as logs:
-            logs.write(datetime.datetime.now() + ': ' + log)
+            date = str(datetime.datetime.now())
+            print(type(date))
+            logs.write(date + ': ' + log)
 
 def getdata():
-    data = urllib.request.urlopen("https:///hats184.github.io/api/toptrumps/robot/robot.json").readall()
-    data = data.decode('UTF-8')
+    data = requests.get("https://hats184.github.io/api/toptrumps/robot/robot.json")
+    data = data.text
+    #print(type(data), data)
     if data == 'Not Found':
+        writelog('Unsucessfull json file finding. ')
         print('Sorry, but we cannot find the data. Look at logs.txt for more infomation. Now terminating application')
-        writelog('Terminated Application')
         sys.exit()
     else:
         pokemonDict = json.loads(data)
-        writelog('Suceesfull loading of robot.json')
         return pokemonDict
 
 for i in range(26):
-    playerLOC.append(getdata()[i])
+    playerLOC.append(getdata()[str(i)])
     oi = i
     i += 1
-    AILOC.append(getdata([i]))
+    AILOC.append(getdata()[str(i)])
     i = oi
 
-print(playerLOC, AILOC)
+#print(playerLOC, AILOC)
 
 
 
